@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../core/storage/token_storage.dart';
+import '../core/api/report_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,67 +9,37 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final tokenStorage = TokenStorage();
-  String? token;
+  final reportService = ReportService();
+  List reports = [];
 
   @override
   void initState() {
     super.initState();
-    loadToken();
+    loadReports();
   }
 
-  Future<void> loadToken() async {
-    final t = await tokenStorage.getToken();
+  void loadReports() async {
+    final data = await reportService.getReports();
+
     setState(() {
-      token = t;
+      reports = data;
     });
-  }
-
-  void logout() async {
-    await tokenStorage.clearToken();
-
-    if (!mounted) return;
-
-    Navigator.pushReplacementNamed(context, '/');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Home"),
-        actions: [
-          IconButton(
-            onPressed: logout,
-            icon: const Icon(Icons.logout),
-          )
-        ],
-      ),
-      body: Center(
-        child: token == null
-            ? const Text("No token found")
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "You are logged in 🎉",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    "JWT:",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      token!,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                  ),
-                ],
-              ),
+      appBar: AppBar(title: const Text("Reports")),
+      body: ListView.builder(
+        itemCount: reports.length,
+        itemBuilder: (context, index) {
+          final report = reports[index];
+
+          return ListTile(
+            title: Text(report["description"] ?? ""),
+            subtitle: Text(report["price"].toString()),
+          );
+        },
       ),
     );
   }
