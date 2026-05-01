@@ -26,4 +26,27 @@ print("STATUS: ${response.statusCode}");
 
     return null;
   }
+
+   Future<bool> register(String name, String email, String password) async {
+    final url = Uri.parse("$baseUrl/api/auth/register");
+
+    final response = await http.post(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode({
+        "name": name,
+        "email": email,
+        "password": password,
+      }),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      print("Register error: ${response.body}");
+      return false;
+    }
+  }
 }

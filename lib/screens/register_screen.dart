@@ -1,31 +1,38 @@
 import 'package:flutter/material.dart';
 import '../core/api/auth_service.dart';
-import '../core/storage/token_storage.dart';
 
-class LoginScreen extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
+  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
   final authService = AuthService();
-  final tokenStorage = TokenStorage();
 
-  void login() async {
-    final token = await authService.login(
+  void register() async {
+    if (passwordController.text != confirmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Passwords do not match")),
+      );
+      return;
+    }
+
+    final success = await authService.register(
+      nameController.text,
       emailController.text,
       passwordController.text,
     );
 
-    if (token != null) {
-      await tokenStorage.saveToken(token);
-      Navigator.pushReplacementNamed(context, '/home');
+    if (success) {
+      Navigator.pushReplacementNamed(context, '/login');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Login failed")),
+        const SnackBar(content: Text("Registration failed")),
       );
     }
   }
@@ -62,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const Text(
-                      "Driver Reports",
+                      "Create Account",
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -70,6 +77,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
 
                     const SizedBox(height: 25),
+
+                    TextField(
+                      controller: nameController,
+                      decoration: const InputDecoration(
+                        labelText: "Name",
+                        prefixIcon: Icon(Icons.person),
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+
+                    const SizedBox(height: 15),
 
                     TextField(
                       controller: emailController,
@@ -92,14 +110,26 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
 
+                    const SizedBox(height: 15),
+
+                    TextField(
+                      controller: confirmPasswordController,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        labelText: "Confirm Password",
+                        prefixIcon: Icon(Icons.lock_outline),
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+
                     const SizedBox(height: 20),
 
                     SizedBox(
                       width: double.infinity,
                       height: 45,
                       child: ElevatedButton(
-                        onPressed: login,
-                        child: const Icon(Icons.arrow_forward),
+                        onPressed: register,
+                        child: const Icon(Icons.check),
                       ),
                     ),
 
@@ -107,13 +137,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     TextButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/register');
+                        Navigator.pushReplacementNamed(context, '/login');
                       },
-                      child: const Text("Create account"),
+                      child: const Text("Already have an account? Login"),
                     ),
-
-                    const SizedBox(height: 5),
-
                   ],
                 ),
               ),
