@@ -12,10 +12,14 @@ Future<String?> _getToken() async {
     Object? body,
     Map<String, String>? headers,
   }) async {
+    final token = await _getToken();
     return await http.post(
       Uri.parse(baseUrl + url),
       body: body,
-      headers: headers,
+            headers: {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      },
     );
   }
 

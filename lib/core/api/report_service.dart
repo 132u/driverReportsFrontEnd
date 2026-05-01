@@ -19,9 +19,6 @@ class ReportService {
     final response = await _client.post(
       "/api/reports",
       body: jsonEncode(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
     );
 
     if (response.statusCode != 200 &&

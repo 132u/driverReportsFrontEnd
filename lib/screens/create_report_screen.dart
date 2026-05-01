@@ -33,8 +33,9 @@ class _CreateReportScreenState extends State<CreateReportScreen> {
       "clientName": clientController.text,
       "paymentType": paymentType,
       "moneyHolder": moneyHolder,
+      "userId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "imagePath": "string"
     };
-
     try {
       await reportService.createReport(data);
 
