@@ -7,6 +7,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+    final _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -65,84 +66,128 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ],
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      "Create Account",
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                child: Form(
+  key: _formKey,
+  child: Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      const Text(
+        "Create Account",
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
 
-                    const SizedBox(height: 25),
+      const SizedBox(height: 25),
 
-                    TextField(
-                      controller: nameController,
-                      decoration: const InputDecoration(
-                        labelText: "Name",
-                        prefixIcon: Icon(Icons.person),
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
+      // 👤 NAME
+      TextFormField(
+        controller: nameController,
+        decoration: const InputDecoration(
+          labelText: "Name",
+          prefixIcon: Icon(Icons.person),
+          border: OutlineInputBorder(),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return "Введите имя";
+          }
+          return null;
+        },
+      ),
 
-                    const SizedBox(height: 15),
+      const SizedBox(height: 15),
 
-                    TextField(
-                      controller: emailController,
-                      decoration: const InputDecoration(
-                        labelText: "Email",
-                        prefixIcon: Icon(Icons.email),
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
+      // 📧 EMAIL (🔥 ВАЛИДАЦИЯ)
+      TextFormField(
+        controller: emailController,
+        decoration: const InputDecoration(
+          labelText: "Email",
+          prefixIcon: Icon(Icons.email),
+          border: OutlineInputBorder(),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return "Введите email";
+          }
 
-                    const SizedBox(height: 15),
+          final emailRegex =
+              RegExp(r'^[^@]+@[^@]+\.[^@]+');
 
-                    TextField(
-                      controller: passwordController,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: "Password",
-                        prefixIcon: Icon(Icons.lock),
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
+          if (!emailRegex.hasMatch(value)) {
+            return "Некорректный email";
+          }
 
-                    const SizedBox(height: 15),
+          return null;
+        },
+      ),
 
-                    TextField(
-                      controller: confirmPasswordController,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: "Confirm Password",
-                        prefixIcon: Icon(Icons.lock_outline),
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
+      const SizedBox(height: 15),
 
-                    const SizedBox(height: 20),
+      // 🔑 PASSWORD
+      TextFormField(
+        controller: passwordController,
+        obscureText: true,
+        decoration: const InputDecoration(
+          labelText: "Password",
+          prefixIcon: Icon(Icons.lock),
+          border: OutlineInputBorder(),
+        ),
+        validator: (value) {
+          if (value == null || value.length < 6) {
+            return "Минимум 6 символов";
+          }
+          return null;
+        },
+      ),
 
-                    SizedBox(
-                      width: double.infinity,
-                      height: 45,
-                      child: ElevatedButton(
-                        onPressed: register,
-                        child: const Icon(Icons.check),
-                      ),
-                    ),
+      const SizedBox(height: 15),
 
-                    const SizedBox(height: 10),
+      // 🔑 CONFIRM PASSWORD
+      TextFormField(
+        controller: confirmPasswordController,
+        obscureText: true,
+        decoration: const InputDecoration(
+          labelText: "Confirm Password",
+          prefixIcon: Icon(Icons.lock_outline),
+          border: OutlineInputBorder(),
+        ),
+        validator: (value) {
+          if (value != passwordController.text) {
+            return "Пароли не совпадают";
+          }
+          return null;
+        },
+      ),
 
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(context, '/login');
-                      },
-                      child: const Text("Already have an account? Login"),
-                    ),
-                  ],
-                ),
+      const SizedBox(height: 20),
+
+      // ✅ BUTTON
+      SizedBox(
+        width: double.infinity,
+        height: 45,
+        child: ElevatedButton(
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              register(); // 🔥 только если всё валидно
+            }
+          },
+          child: const Icon(Icons.check),
+        ),
+      ),
+
+      const SizedBox(height: 10),
+
+      TextButton(
+        onPressed: () {
+          Navigator.pushReplacementNamed(context, '/login');
+        },
+        child: const Text("Already have an account? Login"),
+      ),
+    ],
+  ),
+)
               ),
             ),
           ),

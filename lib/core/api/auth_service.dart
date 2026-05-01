@@ -14,11 +14,10 @@ class AuthService {
         "password": password
       }),
     );
-print("STATUS: ${response.statusCode}");
-  print("BODY: ${response.body}");
-  final data2 = jsonDecode(response.body);
-  final ddd=data2["jwtToken"];
-  print("BODY: ${jsonDecode(response.body)}");
+
+    if (response.statusCode == 401) {
+      return null;
+}
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       return data["jwtToken"];

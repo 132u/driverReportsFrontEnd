@@ -25,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushReplacementNamed(context, '/home');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Login failed")),
+        const SnackBar(content: Text("Неверный логин или пароль")),
       );
     }
   }
