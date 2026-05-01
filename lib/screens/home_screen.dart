@@ -1,3 +1,4 @@
+import 'package:driver_reports_app/screens/report_details_screen.dart';
 import 'package:flutter/material.dart';
 import '../core/api/report_service.dart';
 
@@ -10,7 +11,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final reportService = ReportService();
+
   List reports = [];
+  bool isLoading = true;
+
+  final String driverName = "Driver Viktor"; // потом возьмешь из JWT
 
   @override
   void initState() {
@@ -23,23 +28,89 @@ class _HomeScreenState extends State<HomeScreen> {
 
     setState(() {
       reports = data;
+      isLoading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Reports")),
-      body: ListView.builder(
-        itemCount: reports.length,
-        itemBuilder: (context, index) {
-          final report = reports[index];
+      backgroundColor: const Color(0xFFF5F6FA),
 
-          return ListTile(
-            title: Text(report["description"] ?? ""),
-            subtitle: Text(report["price"].toString()),
-          );
+      // 🔥 HEADER
+      appBar: AppBar(
+        title: Text(driverName),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {
+              Navigator.pushNamed(context, '/createReport');
+            },
+          )
+        ],
+      ),
+
+      // 🔥 BODY
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : reports.isEmpty
+              ? const Center(child: Text("No reports yet"))
+              : ListView.builder(
+                  padding: const EdgeInsets.all(12),
+                  itemCount: reports.length,
+                  itemBuilder: (context, index) {
+                    final report = reports[index];
+
+                    return Card(
+                      elevation: 3,
+                      margin: const EdgeInsets.only(bottom: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.all(12),
+
+                        // 💰 цена
+                        title: Text(
+                          "€ ${report["price"] ?? 0}",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+
+                        // 📄 детали
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 6),
+                            Text(report["description"] ?? ""),
+                          ],
+                        ),
+
+                        trailing: const Icon(Icons.arrow_forward_ios),
+
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ReportDetailsScreen(
+                                report: report,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
+
+      // 🔥 кнопка создания отчета (дублирует AppBar + удобно)
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/createReport');
         },
+        child: const Icon(Icons.add),
       ),
     );
   }
