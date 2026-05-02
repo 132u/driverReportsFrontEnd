@@ -1,5 +1,6 @@
 import 'package:driver_reports_app/screens/full_screen_image.dart';
 import 'package:flutter/material.dart';
+
 const String baseUrl = "https://localhost:7289";
 
 class ReportDetailsScreen extends StatelessWidget {
@@ -50,13 +51,11 @@ class ReportDetailsScreen extends StatelessWidget {
           ),
         ],
       ),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             // 📄 ОСНОВНАЯ КАРТОЧКА
             Container(
               padding: const EdgeInsets.all(16),
@@ -73,20 +72,14 @@ class ReportDetailsScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   _buildRow("📅 Дата", _formatDate(report["reportDate"])),
-
                   _buildRow("👤 Водитель", report["driverName"] ?? ""),
-
                   _buildRow("🧾 Заказчик", report["clientName"] ?? ""),
-
                   _buildRow("💰 Сумма", "${report["price"] ?? 0} ₽"),
-
                   _buildRow(
                     "💳 Тип платежа",
                     paymentTypeToString(report["paymentType"]),
                   ),
-
                   _buildRow(
                     "👛 Деньги у",
                     moneyHolderToString(
@@ -134,15 +127,14 @@ class ReportDetailsScreen extends StatelessWidget {
                 print(report["imagePaths"]);
 //print(baseUrl + report["imagePaths"][0]);
 
-
                 final images = report["imagePaths"] as List?;
-print(images);
+                print(images);
 
-if (images != null && images is List && images.isNotEmpty) {
-  print(baseUrl + images[0]);
-} else {
-  print("NO IMAGES");
-}
+                if (images != null && images is List && images.isNotEmpty) {
+                  print(baseUrl + images[0]);
+                } else {
+                  print("NO IMAGES");
+                }
                 if (images == null || images.isEmpty) {
                   return const SizedBox();
                 }
@@ -155,7 +147,6 @@ if (images != null && images is List && images.isNotEmpty) {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
-
                     SizedBox(
                       height: 220,
                       child: ListView.builder(

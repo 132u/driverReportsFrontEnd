@@ -68,9 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-
                     const SizedBox(height: 25),
-
                     TextField(
                       controller: emailController,
                       decoration: const InputDecoration(
@@ -79,9 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         border: OutlineInputBorder(),
                       ),
                     ),
-
                     const SizedBox(height: 15),
-
                     TextField(
                       controller: passwordController,
                       obscureText: true,
@@ -91,9 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         border: OutlineInputBorder(),
                       ),
                     ),
-
                     const SizedBox(height: 20),
-
                     SizedBox(
                       width: double.infinity,
                       height: 45,
@@ -102,18 +96,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: const Icon(Icons.arrow_forward),
                       ),
                     ),
-
                     const SizedBox(height: 10),
-
                     TextButton(
                       onPressed: () {
                         Navigator.pushNamed(context, '/register');
                       },
                       child: const Text("Create account"),
                     ),
-
                     const SizedBox(height: 5),
-
                   ],
                 ),
               ),

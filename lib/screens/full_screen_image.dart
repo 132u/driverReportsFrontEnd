@@ -9,10 +9,8 @@ class FullScreenImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-
       body: GestureDetector(
         onTap: () => Navigator.pop(context),
-
         child: Center(
           child: Hero(
             tag: imageUrl,

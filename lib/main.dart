@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomeScreen(),
         '/login': (context) => LoginScreen(),
         '/register': (context) => RegisterScreen(),
-        '/createReport': (context) => CreateReportScreen(), 
+        '/createReport': (context) => CreateReportScreen(),
       },
     );
   }

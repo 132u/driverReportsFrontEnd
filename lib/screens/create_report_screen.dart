@@ -13,22 +13,22 @@ class CreateReportScreen extends StatefulWidget {
 
 class _CreateReportScreenState extends State<CreateReportScreen> {
   final _formKey = GlobalKey<FormState>();
-File? selectedImage;
-List<File> selectedImages= [];
-Future<void> pickImages() async {
-  final picker = ImagePicker();
+  File? selectedImage;
+  List<File> selectedImages = [];
+  Future<void> pickImages() async {
+    final picker = ImagePicker();
 
-  final pickedFiles = await picker.pickMultiImage();
+    final pickedFiles = await picker.pickMultiImage();
 
-  if (pickedFiles.isNotEmpty) {
-    setState(() {
-      selectedImages =
-          pickedFiles.map((e) => File(e.path)).toList();
-    });
+    if (pickedFiles.isNotEmpty) {
+      setState(() {
+        selectedImages = pickedFiles.map((e) => File(e.path)).toList();
+      });
 
-    print("SELECTED: ${selectedImages.length} images");
+      print("SELECTED: ${selectedImages.length} images");
+    }
   }
-}
+
   final priceController = TextEditingController();
   final descriptionController = TextEditingController();
   final clientController = TextEditingController();
@@ -41,13 +41,12 @@ Future<void> pickImages() async {
   int moneyHolder = 0;
 
   Future<void> createReport() async {
-    
     if (!_formKey.currentState!.validate()) return;
-List<String> imagePaths = [];
+    List<String> imagePaths = [];
 
-if (selectedImages.isNotEmpty) {
-  imagePaths = await reportService.uploadImages(selectedImages);
-}
+    if (selectedImages.isNotEmpty) {
+      imagePaths = await reportService.uploadImages(selectedImages);
+    }
     final data = {
       "reportDate": selectedDate.toIso8601String(),
       "price": int.parse(priceController.text),
@@ -55,7 +54,7 @@ if (selectedImages.isNotEmpty) {
       "clientName": clientController.text,
       "paymentType": paymentType,
       "moneyHolder": paymentType == 0 ? moneyHolder : 1,
-  "imagePath": imagePaths
+      "imagePath": imagePaths
     };
     try {
       await reportService.createReport(data);
@@ -76,16 +75,12 @@ if (selectedImages.isNotEmpty) {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Создать отчет")),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-
         child: Form(
           key: _formKey,
-
           child: Column(
             children: [
-
               // 📅 DATE
               ListTile(
                 contentPadding: EdgeInsets.zero,
@@ -94,7 +89,6 @@ if (selectedImages.isNotEmpty) {
                   selectedDate.toString().split(" ")[0],
                 ),
                 trailing: const Icon(Icons.calendar_today),
-
                 onTap: () async {
                   final date = await showDatePicker(
                     context: context,
@@ -200,7 +194,6 @@ if (selectedImages.isNotEmpty) {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text("Деньги у:"),
-
                     RadioListTile(
                       title: const Text("Водитель"),
                       value: 0,
@@ -211,7 +204,6 @@ if (selectedImages.isNotEmpty) {
                         });
                       },
                     ),
-
                     RadioListTile(
                       title: const Text("Виктор"),
                       value: 1,
@@ -226,48 +218,46 @@ if (selectedImages.isNotEmpty) {
                 ),
 
               const SizedBox(height: 20),
-Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
-    const Text("Фото"),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("Фото"),
+                  const SizedBox(height: 8),
+                  GestureDetector(
+                    onTap: pickImages,
+                    child: Container(
+                      height: 150,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: selectedImages.isEmpty
+                          ? const Center(child: Text("Выбрать фото"))
+                          : ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: selectedImages.length,
+                              itemBuilder: (context, index) {
+                                final file = selectedImages[index];
 
-    const SizedBox(height: 8),
-
-GestureDetector(
-  onTap: pickImages,
-  child: Container(
-    height: 150,
-    width: double.infinity,
-    decoration: BoxDecoration(
-      color: Colors.grey[200],
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: selectedImages.isEmpty
-        ? const Center(child: Text("Выбрать фото"))
-        : ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: selectedImages.length,
-            itemBuilder: (context, index) {
-              final file = selectedImages[index];
-
-              return Container(
-                margin: const EdgeInsets.all(8),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.file(
-                    file,
-                    width: 120,
-                    height: 120,
-                    fit: BoxFit.cover,
+                                return Container(
+                                  margin: const EdgeInsets.all(8),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.file(
+                                      file,
+                                      width: 120,
+                                      height: 120,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                    ),
                   ),
-                ),
-              );
-            },
-          ),
-  ),
-),
-  ],
-),
+                ],
+              ),
               // 🚀 BUTTON
               SizedBox(
                 width: double.infinity,

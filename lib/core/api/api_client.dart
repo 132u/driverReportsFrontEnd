@@ -3,10 +3,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiClient {
   final String baseUrl = "https://localhost:7289";
-Future<String?> _getToken() async {
+  Future<String?> _getToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString("jwt");
   }
+
   Future<http.Response> post(
     String url, {
     Object? body,
@@ -16,7 +17,7 @@ Future<String?> _getToken() async {
     return await http.post(
       Uri.parse(baseUrl + url),
       body: body,
-            headers: {
+      headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',
       },
@@ -26,8 +27,7 @@ Future<String?> _getToken() async {
   Future<http.Response> get(String url) async {
     final token = await _getToken();
 
-    return 
-    await http.get(
+    return await http.get(
       Uri.parse('$baseUrl$url'),
       headers: {
         'Content-Type': 'application/json',
@@ -36,4 +36,3 @@ Future<String?> _getToken() async {
     );
   }
 }
-
