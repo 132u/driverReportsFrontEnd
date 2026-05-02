@@ -64,7 +64,7 @@ if (selectedImages.isNotEmpty) {
         const SnackBar(content: Text("Отчет успешно создан")),
       );
 
-      Navigator.pop(context);
+      Navigator.pop(context, true);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Ошибка: $e")),

@@ -1,5 +1,6 @@
 import 'package:driver_reports_app/screens/full_screen_image.dart';
 import 'package:flutter/material.dart';
+const String baseUrl = "https://localhost:7289";
 
 class ReportDetailsScreen extends StatelessWidget {
   final Map report;
@@ -44,7 +45,7 @@ class ReportDetailsScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.edit),
             onPressed: () {
-              // 👉 позже добавим экран редактирования
+              // TODO: экран редактирования
             },
           ),
         ],
@@ -55,8 +56,6 @@ class ReportDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-            
 
             // 📄 ОСНОВНАЯ КАРТОЧКА
             Container(
@@ -119,9 +118,7 @@ class ReportDetailsScreen extends StatelessWidget {
                   children: [
                     const Text(
                       "Описание",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     Text(report["description"]),
@@ -130,41 +127,87 @@ class ReportDetailsScreen extends StatelessWidget {
               ),
 
             const SizedBox(height: 20),
-// 📷 ФОТО
-         if (report["imagePath"] != null)
-  GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => FullScreenImage(
-            imageUrl: report["imagePath"],
-          ),
-        ),
-      );
-    },
-    child: Hero(
-      tag: report["imagePath"],
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Image.network(
-          report["imagePath"],
-          height: 220,
-          width: double.infinity,
-          fit: BoxFit.cover, // 🔥 важно
-        ),
-      ),
-    ),
-  ),
+
+            // 📷 ФОТО (несколько)
+            Builder(
+              builder: (context) {
+                print(report["imagePaths"]);
+//print(baseUrl + report["imagePaths"][0]);
+
+
+                final images = report["imagePaths"] as List?;
+print(images);
+
+if (images != null && images is List && images.isNotEmpty) {
+  print(baseUrl + images[0]);
+} else {
+  print("NO IMAGES");
+}
+                if (images == null || images.isEmpty) {
+                  return const SizedBox();
+                }
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Фото",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+
+                    SizedBox(
+                      height: 220,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: images.length,
+                        itemBuilder: (context, index) {
+                          final imageUrl = images[index];
+
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => FullScreenImage(
+                                    imageUrl: imageUrl,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Hero(
+                              tag: imageUrl,
+                              child: Container(
+                                margin: const EdgeInsets.only(right: 10),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: Image.network(
+                                    baseUrl + imageUrl,
+                                    width: 250,
+                                    height: 220,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
 
             const SizedBox(height: 16),
+
             // ✏️ КНОПКА РЕДАКТИРОВАНИЯ
             SizedBox(
               width: double.infinity,
               height: 45,
               child: ElevatedButton.icon(
                 onPressed: () {
-                  // 👉 потом сделаем EditScreen
+                  // TODO: экран редактирования
                 },
                 icon: const Icon(Icons.edit),
                 label: const Text("Редактировать отчет"),

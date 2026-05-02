@@ -90,8 +90,12 @@ Widget build(BuildContext context) {
               ),
 
               ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/createReport');
+                onPressed: () async {
+                  //Navigator.pushNamed(context, '/createReport');
+                  final result = await Navigator.pushNamed(context, '/createReport');
+                  if (result == true) {
+                    loadReports(); // 👈 обновляем список
+                  }
                 },
                 icon: const Icon(Icons.add),
                 label: const Text("Create"),
