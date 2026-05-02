@@ -170,7 +170,7 @@ if (images != null && images is List && images.isNotEmpty) {
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => FullScreenImage(
-                                    imageUrl: imageUrl,
+                                    imageUrl: baseUrl + imageUrl,
                                   ),
                                 ),
                               );
@@ -202,17 +202,17 @@ if (images != null && images is List && images.isNotEmpty) {
             const SizedBox(height: 16),
 
             // ✏️ КНОПКА РЕДАКТИРОВАНИЯ
-            SizedBox(
-              width: double.infinity,
-              height: 45,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  // TODO: экран редактирования
-                },
-                icon: const Icon(Icons.edit),
-                label: const Text("Редактировать отчет"),
-              ),
-            ),
+            // SizedBox(
+            //   width: double.infinity,
+            //   height: 45,
+            //   child: ElevatedButton.icon(
+            //     onPressed: () {
+            //       // TODO: экран редактирования
+            //     },
+            //     icon: const Icon(Icons.edit),
+            //     label: const Text("Редактировать отчет"),
+            //   ),
+            // ),
           ],
         ),
       ),
