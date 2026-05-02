@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../core/api/report_service.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class CreateReportScreen extends StatefulWidget {
   const CreateReportScreen({super.key});
@@ -11,7 +13,22 @@ class CreateReportScreen extends StatefulWidget {
 
 class _CreateReportScreenState extends State<CreateReportScreen> {
   final _formKey = GlobalKey<FormState>();
+File? selectedImage;
+List<File> selectedImages= [];
+Future<void> pickImages() async {
+  final picker = ImagePicker();
 
+  final pickedFiles = await picker.pickMultiImage();
+
+  if (pickedFiles.isNotEmpty) {
+    setState(() {
+      selectedImages =
+          pickedFiles.map((e) => File(e.path)).toList();
+    });
+
+    print("SELECTED: ${selectedImages.length} images");
+  }
+}
   final priceController = TextEditingController();
   final descriptionController = TextEditingController();
   final clientController = TextEditingController();
@@ -24,17 +41,21 @@ class _CreateReportScreenState extends State<CreateReportScreen> {
   int moneyHolder = 0;
 
   Future<void> createReport() async {
+    
     if (!_formKey.currentState!.validate()) return;
+List<String> imagePaths = [];
 
+if (selectedImages.isNotEmpty) {
+  imagePaths = await reportService.uploadImages(selectedImages);
+}
     final data = {
       "reportDate": selectedDate.toIso8601String(),
       "price": int.parse(priceController.text),
       "description": descriptionController.text,
       "clientName": clientController.text,
       "paymentType": paymentType,
-      "moneyHolder": moneyHolder,
-      "userId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "imagePath": "string"
+      "moneyHolder": paymentType == 0 ? moneyHolder : 1,
+  "imagePath": imagePaths
     };
     try {
       await reportService.createReport(data);
@@ -205,7 +226,35 @@ class _CreateReportScreenState extends State<CreateReportScreen> {
                 ),
 
               const SizedBox(height: 20),
+Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    const Text("Фото"),
 
+    const SizedBox(height: 8),
+
+    GestureDetector(
+      onTap: pickImages,
+      child: Container(
+        height: 150,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: selectedImage == null
+            ? const Center(child: Text("Выбрать фото"))
+            : ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.file(
+                  selectedImage!,
+                  fit: BoxFit.cover,
+                ),
+              ),
+      ),
+    ),
+  ],
+),
               // 🚀 BUTTON
               SizedBox(
                 width: double.infinity,
