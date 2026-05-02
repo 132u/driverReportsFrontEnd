@@ -233,26 +233,39 @@ Column(
 
     const SizedBox(height: 8),
 
-    GestureDetector(
-      onTap: pickImages,
-      child: Container(
-        height: 150,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: selectedImage == null
-            ? const Center(child: Text("Выбрать фото"))
-            : ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.file(
-                  selectedImage!,
-                  fit: BoxFit.cover,
-                ),
-              ),
-      ),
+GestureDetector(
+  onTap: pickImages,
+  child: Container(
+    height: 150,
+    width: double.infinity,
+    decoration: BoxDecoration(
+      color: Colors.grey[200],
+      borderRadius: BorderRadius.circular(10),
     ),
+    child: selectedImages.isEmpty
+        ? const Center(child: Text("Выбрать фото"))
+        : ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: selectedImages.length,
+            itemBuilder: (context, index) {
+              final file = selectedImages[index];
+
+              return Container(
+                margin: const EdgeInsets.all(8),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.file(
+                    file,
+                    width: 120,
+                    height: 120,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              );
+            },
+          ),
+  ),
+),
   ],
 ),
               // 🚀 BUTTON
