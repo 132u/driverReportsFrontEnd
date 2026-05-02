@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'api_client.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import '../storage/token_storage.dart';
+import 'token_storage.dart';
 
 class ReportService {
   final ApiClient _client = ApiClient();
@@ -18,24 +18,42 @@ class ReportService {
   }
 
   // 🚀 СОЗДАНИЕ ОТЧЕТА
-  Future<void> createReport(Map<String, dynamic> data) async {
- final tokenStorage = TokenStorage();
-  final token = await tokenStorage.getToken();
+//   Future<void> createReport(Map<String, dynamic> data) async {
+//  final tokenStorage = TokenStorage();
+//   final token = await tokenStorage.getToken();
    
-    final response = await _client.post(
-      "/api/reports",
-      body: jsonEncode(data),
-      headers:  {
+//     final response = await _client.post(
+//       "/api/reports",
+//       body: jsonEncode(data),
+//       headers:  {
+//         'Content-Type': 'application/json',
+//        'Authorization': 'Bearer $token',
+//       }
+//     );
+  
+//     if (response.statusCode != 200 &&
+//         response.statusCode != 201) {
+//       throw Exception("Failed to create report");
+//     }
+//   }
+
+Future<void> createReport(Map<String, dynamic> data) async {
+   final tokenStorage = TokenStorage();
+  final token = await tokenStorage.getToken();
+  final response = await _client.post(
+    "/api/reports",
+    body: jsonEncode(data),
+          headers:  {
         'Content-Type': 'application/json',
        'Authorization': 'Bearer $token',
       }
-    );
-  
-    if (response.statusCode != 200 &&
-        response.statusCode != 201) {
-      throw Exception("Failed to create report");
-    }
+  );
+
+  if (response.statusCode != 200 &&
+      response.statusCode != 201) {
+    throw Exception("Failed to create report");
   }
+}
 
   
 Future<List<String>> uploadImages(List<File> files) async {
@@ -77,4 +95,5 @@ Future<List<String>> uploadImages(List<File> files) async {
 
   throw Exception("Upload failed");
 }
+
 }

@@ -26,7 +26,8 @@ Future<String?> _getToken() async {
   Future<http.Response> get(String url) async {
     final token = await _getToken();
 
-    return await http.get(
+    return 
+    await http.get(
       Uri.parse('$baseUrl$url'),
       headers: {
         'Content-Type': 'application/json',

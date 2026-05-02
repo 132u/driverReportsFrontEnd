@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../core/api/auth_service.dart';
-import '../core/storage/token_storage.dart';
+import '../core/api/token_storage.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
